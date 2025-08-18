@@ -6,7 +6,7 @@
                     <img src="../assets/images/logos/dark-logo.svg" width="180" alt="" />
                 </a>
                 <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
-                    <i class="ti ti-x fs-8"></i>
+                    <i class="ti ti-x fs-8" style="color: #ffff;"></i>
                 </div>
             </div>
             <!-- Sidebar navigation-->
