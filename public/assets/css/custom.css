@@ -27,6 +27,23 @@
     color: #ffffff !important;
 }
 
+/* Sidebar menu item aktif */
+.left-sidebar .sidebar-item.active > .sidebar-link {
+    background-color: #2aa15a !important; /* hijau hover */
+    color: #ffffff !important;            /* teks putih */
+    border-radius: 6px;                   /* opsional: biar agak rounded */
+}
+
+/* Icon dalam menu aktif */
+.left-sidebar .sidebar-item.active > .sidebar-link i {
+    color: #ffffff !important;
+}
+
+/* Pastikan teks di dalam menu aktif ikut putih */
+.left-sidebar .sidebar-item.active > .sidebar-link .hide-menu {
+    color: #ffffff !important;
+}
+
 
 /* Header selaras dengan sidebar */
 .app-header {
