@@ -1,0 +1,222 @@
+@extends('layouts.master')
+@section('content')
+<style>
+    .btn-tambah {
+        background-color: #06923E;
+        color: #fff;
+        border: none;
+    }
+
+    .btn-tambah:hover {
+        background-color: #2aa15a;
+        color: #fff;
+    }
+</style>
+<div class="row">
+    <div class="col-lg-12 d-flex align-items-stretch">
+        <div class="card w-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="card-title fw-semibold mb-0">Laporan</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table text-nowrap mb-0 align-middle">
+                        <thead class="text-dark fs-4">
+                            <tr>
+                                <th>No</th>
+                                <th>Tanggal</th>
+                                <th>Waktu</th>
+                                <th>Sektor</th>
+                                <th>Uraian Kegiatan</th>
+                                <th>Saksi</th>
+                                <th>Dokumentasi</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($laporan as $item)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d/m/Y') }}</td>
+                                <td>{{ $item->waktu }}</td>
+                                <td>{{ $item->sektor }}</td>
+                                <td>{{ Str::limit($item->uraian_kegiatan, 50) }}</td>
+                                <td>{{ $item->saksi }}</td>
+                                <td>
+                                    @if ($item->dokumentasi)
+                                    <img src="{{ asset('storage/'.$item->dokumentasi) }}"
+                                        alt="Dokumentasi"
+                                        class="img-thumbnail"
+                                        style="max-width: 100px; max-height: 100px; object-fit: cover; cursor: pointer;">
+                                    @else
+                                    <span class="text-muted">-</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($item->status === 'proses')
+                                    <button class="btn btn-sm btn-warning btn-approve" 
+                                            data-id="{{ $item->id }}"
+                                            title="Klik untuk validasi">
+                                        <i class="fas fa-clock me-1"></i>Proses
+                                    </button>
+                                    @else
+                                    <span class="badge bg-success fs-6">
+                                        <i class="fas fa-check me-1"></i>Divalidasi
+                                    </span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="8" class="text-center py-4">
+                                    <div class="text-muted">
+                                        <i class="fas fa-inbox fa-2x mb-2"></i>
+                                        <br>Belum ada data laporan
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal untuk preview gambar -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Dokumentasi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="Dokumentasi" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Handle approve button clicks
+    document.querySelectorAll('.btn-approve').forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            
+            const laporanId = this.dataset.id;
+            const btn = this;
+
+            // Konfirmasi dengan SweetAlert
+            Swal.fire({
+                title: 'Validasi Laporan',
+                text: "Apakah Anda yakin ingin memvalidasi laporan ini? Status akan berubah menjadi 'Divalidasi'.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#06923E',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="fas fa-check me-1"></i>Ya, Validasi!',
+                cancelButtonText: '<i class="fas fa-times me-1"></i>Batal',
+                reverseButtons: true,
+                focusConfirm: false,
+                focusCancel: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    approveReport(laporanId, btn);
+                }
+            });
+        });
+    });
+
+    // Function untuk approve laporan
+    function approveReport(laporanId, btn) {
+        // Disable button dan ubah text
+        btn.disabled = true;
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Memproses...';
+
+        // Build URL dengan aman
+        const url = `{{ url('laporan') }}/${laporanId}/approve`;
+
+        // Kirim request
+        fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw response;
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Update UI - ganti button dengan badge
+                const statusCell = btn.closest('td');
+                if (statusCell) {
+                    statusCell.innerHTML = '<span class="badge bg-success fs-6"><i class="fas fa-check me-1"></i>Divalidasi</span>';
+                }
+
+                // Show success message
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: data.message || 'Laporan berhasil divalidasi.',
+                    icon: 'success',
+                    confirmButtonColor: '#06923E',
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            } else {
+                throw new Error(data.message || 'Gagal memvalidasi laporan');
+            }
+        })
+        .catch(async (error) => {
+            console.error('Error:', error);
+            
+            let errorMessage = 'Terjadi kesalahan saat memvalidasi laporan.';
+            
+            // Try to get error message from response
+            try {
+                if (error instanceof Response) {
+                    const errorData = await error.json();
+                    errorMessage = errorData.message || errorMessage;
+                    
+                    if (error.status === 419) {
+                        errorMessage = 'Sesi Anda telah habis. Silakan refresh halaman dan coba lagi.';
+                    }
+                }
+            } catch (e) {
+                // Use default error message
+            }
+
+            // Show error message
+            Swal.fire({
+                title: 'Oops!',
+                text: errorMessage,
+                icon: 'error',
+                confirmButtonColor: '#dc3545'
+            });
+
+            // Restore button
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        });
+    }
+
+    // Function untuk show image modal
+    window.showImageModal = function(imageSrc) {
+        const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+        document.getElementById('modalImage').src = imageSrc;
+        modal.show();
+    };
+});
+</script>
+@endpush

@@ -3,7 +3,7 @@
         <div>
             <div class="brand-logo d-flex align-items-center justify-content-between">
                 <a href="./index.html" class="text-nowrap logo-img">
-                    <img src="../assets/images/logos/dark-logo.svg" width="180" alt="" />
+                    <img src="{{asset('assets/images/logos/image.png')}}" width="180" alt="" />
                 </a>
                 <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                     <i class="ti ti-x fs-8" style="color: #ffff;"></i>
@@ -16,7 +16,97 @@
                     @php
                     $role = auth()->user()->role;
                     @endphp
-                    @if ($role === 'admin')
+                    @if ($role === 'super')
+                    <li class="nav-small-cap">
+                        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                        <span class="hide-menu">Home</span>
+                    </li>
+                    <li class="sidebar-item {{ request()->is('super/dashboard') ? 'active' : '' }}">
+                        <a class="sidebar-link" href="{{ url('/super/dashboard') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-layout-dashboard"></i>
+                            </span>
+                            <span class="hide-menu">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-small-cap">
+                        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                        <span class="hide-menu">Pegawai</span>
+                    </li>
+                    <li class="sidebar-item  {{ request()->routeIs('pegawai.index') ? 'active' : '' }}">
+                        <a class="sidebar-link" href="{{ route('pegawai.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-user"></i>
+                            </span>
+                            <span class="hide-menu">Data Pegawai</span>
+                        </a>
+                    </li>
+                    <li class="nav-small-cap">
+                        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                        <span class="hide-menu">Daftar BKPH</span>
+                    </li>
+                    <li class="sidebar-item {{ request()->routeIs('bkphrogojampi.index') ? 'active' : '' }}">
+                        <a class="sidebar-link" href="{{ route('bkphrogojampi.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-location"></i>
+                            </span>
+                            <span class="hide-menu">BKPH Rogojampi</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item {{ request()->routeIs('bkphlicin.index') ? 'active' : '' }}">
+                        <a class="sidebar-link" href="{{ route('bkphlicin.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-location"></i>
+                            </span>
+                            <span class="hide-menu">BKPH Licin</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item {{ request()->routeIs('bkphglenmore.index') ? 'active' : '' }}">
+                        <a class="sidebar-link" href="{{ route('bkphglenmore.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-location"></i>
+                            </span>
+                            <span class="hide-menu">BKPH Glenmore</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item {{ request()->routeIs('bkphsempu.index') ? 'active' : '' }}">
+                        <a class="sidebar-link" href="{{ route('bkphsempu.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-location"></i>
+                            </span>
+                            <span class="hide-menu">BKPH Sempu</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item {{ request()->routeIs('bkphkalibaru.index') ? 'active' : '' }}">
+                        <a class="sidebar-link" href="{{ route('bkphkalibaru.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-location"></i>
+                            </span>
+                            <span class="hide-menu">BKPH Kalibaru</span>
+                        </a>
+                    </li>
+                    @elseif ($role === 'user')
+                    <li class="nav-small-cap">
+                        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                        <span class="hide-menu">Home</span>
+                    </li>
+                    <li class="sidebar-item {{ request()->is('user/dashboard') ? 'active' : '' }}">
+                        <a class="sidebar-link" href="{{ url('/user/dashboard') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-layout-dashboard"></i>
+                            </span>
+                            <span class="hide-menu">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item {{ request()->routeIs('laporan.index') ? 'active' : '' }}">
+                        <a class="sidebar-link" href="{{ route('laporan.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-book"></i>
+                            </span>
+                            <span class="hide-menu">Laporan</span>
+                        </a>
+                    </li>
+                    @elseif ($role == 'admin')
                     <li class="nav-small-cap">
                         <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                         <span class="hide-menu">Home</span>
@@ -29,42 +119,12 @@
                             <span class="hide-menu">Dashboard</span>
                         </a>
                     </li>
-                    <li class="nav-small-cap">
-                        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                        <span class="hide-menu">Pegawai</span>
-                    </li>
-                    <li class="sidebar-item ">
-                        <a class="sidebar-link" href="#" aria-expanded="false">
+                    <li class="sidebar-item {{ request()->routeIs('adminrph.index') ? 'active' : '' }}">
+                        <a class="sidebar-link" href="{{ route('adminrph.index') }}" aria-expanded="false">
                             <span>
-                                <i class="ti ti-user"></i>
+                                <i class="ti ti-book"></i>
                             </span>
-                            <span class="hide-menu">Data Pegawai</span>
-                        </a>
-                    </li>
-                    @elseif ($role === 'polisi')
-                    <li class="nav-small-cap">
-                        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                        <span class="hide-menu">Home</span>
-                    </li>
-                    <li class="sidebar-item {{ request()->is('polisi/dashboard') ? 'active' : '' }}">
-                        <a class="sidebar-link" href="{{ url('/polisi/dashboard') }}" aria-expanded="false">
-                            <span>
-                                <i class="ti ti-layout-dashboard"></i>
-                            </span>
-                            <span class="hide-menu">Dashboard</span>
-                        </a>
-                    </li>
-                    @elseif ($role == 'asper')
-                    <li class="nav-small-cap">
-                        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                        <span class="hide-menu">Home</span>
-                    </li>
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="./index.html" aria-expanded="false">
-                            <span>
-                                <i class="ti ti-layout-dashboard"></i>
-                            </span>
-                            <span class="hide-menu">Dashboard</span>
+                            <span class="hide-menu">RPH</span>
                         </a>
                     </li>
                     @endif

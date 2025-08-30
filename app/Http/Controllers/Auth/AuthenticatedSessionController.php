@@ -32,12 +32,12 @@ class AuthenticatedSessionController extends Controller
         $user = $request->user();
 
         switch ($user->role) {
+            case 'super':
+                return redirect()->intended('/super/dashboard');
+            case 'user':
+                return redirect()->intended('/user/dashboard');
             case 'admin':
                 return redirect()->intended('/admin/dashboard');
-            case 'polisi':
-                return redirect()->intended('/polisi/dashboard');
-            case 'asper':
-                return redirect()->intended('/asper/dashboard');
             default:
                 Auth::logout();
                 abort(403, 'Unauthorized role.');
