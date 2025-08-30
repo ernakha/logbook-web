@@ -40,7 +40,7 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'polisi', // default role
+            'role' => 'user', // default role
         ]);
 
         event(new Registered($user));
@@ -48,12 +48,12 @@ class RegisteredUserController extends Controller
         Auth::login($user);
         // Redirect sesuai role
         switch ($user->role) {
+            case 'super':
+                return redirect('/super/dashboard');
+            case 'user':
+                return redirect('/user/dashboard');
             case 'admin':
                 return redirect('/admin/dashboard');
-            case 'polisi':
-                return redirect('/polisi/dashboard');
-            case 'asper':
-                return redirect('/asper/dashboard');
             default:
                 return redirect(RouteServiceProvider::HOME);
         }

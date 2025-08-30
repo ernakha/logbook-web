@@ -51,36 +51,5 @@
         </div>
     </div>
 
-    <!-- Table RPH -->
-    <div class="card card-custom mt-4">
-        <div class="card-header" style="background-color:#06923E;">
-            <h5 class="mb-0" style="color: #fff;">Data RPH (Terbaru)</h5>
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Sektor</th>
-                        <th>No Telp</th>
-                        <th>Pegawai</th>
-                        <th>BKPH</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($rph as $r)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $r->sektor }}</td>
-                        <td>{{ $r->no_telp }}</td>
-                        <td>{{ $r->pegawai->user->name ?? '-' }}</td>
-                        <td>{{ $r->bkph->daerah_bkph ?? '-' }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-
 </div>
 @endsection

@@ -4,8 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Modernize Free</title>
-    <link rel="shortcut icon" type="image/png" href="{{asset('assets/images/logos/favicon.png')}}" />
+    <title>Laskar Alas</title>
+    <link rel="shortcut icon" type="image/png" href="{{asset('assets/images/logos/logo.png')}}" />
     <link rel="stylesheet" href="{{asset('assets/css/styles.min.css')}}" />
     <link rel="stylesheet" href="{{asset('assets/css/custom.css')}}" />
 </head>
@@ -37,6 +37,9 @@
     <script src="{{asset('assets/libs/apexcharts/dist/apexcharts.min.js')}}"></script>
     <script src="{{asset('assets/libs/simplebar/dist/simplebar.js')}}"></script>
     <script src="{{asset('assets/js/dashboard.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @stack('scripts')
+
 </body>
 
 </html>
