@@ -54,13 +54,13 @@
                                 </td>
                                 <td>
                                     @if ($item->status === 'proses')
-                                    <button class="btn btn-sm btn-warning btn-approve" 
-                                            data-id="{{ $item->id }}"
-                                            title="Klik untuk validasi">
+                                    <button class="btn btn-sm btn-warning btn-approve"
+                                        data-id="{{ $item->id }}"
+                                        title="Klik untuk validasi">
                                         <i class="fas fa-clock me-1"></i>Proses
                                     </button>
                                     @else
-                                    <span class="badge bg-success fs-6">
+                                    <span class="badge bg-success">
                                         <i class="fas fa-check me-1"></i>Divalidasi
                                     </span>
                                     @endif
@@ -102,121 +102,104 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Handle approve button clicks
-    document.querySelectorAll('.btn-approve').forEach(button => {
-        button.addEventListener('click', function (e) {
-            e.preventDefault();
-            
-            const laporanId = this.dataset.id;
-            const btn = this;
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle approve button clicks
+        document.querySelectorAll('.btn-approve').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
 
-            // Konfirmasi dengan SweetAlert
-            Swal.fire({
-                title: 'Validasi Laporan',
-                text: "Apakah Anda yakin ingin memvalidasi laporan ini? Status akan berubah menjadi 'Divalidasi'.",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#06923E',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: '<i class="fas fa-check me-1"></i>Ya, Validasi!',
-                cancelButtonText: '<i class="fas fa-times me-1"></i>Batal',
-                reverseButtons: true,
-                focusConfirm: false,
-                focusCancel: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    approveReport(laporanId, btn);
-                }
-            });
-        });
-    });
+                const laporanId = this.dataset.id;
+                const btn = this;
 
-    // Function untuk approve laporan
-    function approveReport(laporanId, btn) {
-        // Disable button dan ubah text
-        btn.disabled = true;
-        const originalHtml = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Memproses...';
-
-        // Build URL dengan aman
-        const url = `{{ url('laporan') }}/${laporanId}/approve`;
-
-        // Kirim request
-        fetch(url, {
-            method: 'PATCH',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw response;
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                // Update UI - ganti button dengan badge
-                const statusCell = btn.closest('td');
-                if (statusCell) {
-                    statusCell.innerHTML = '<span class="badge bg-success fs-6"><i class="fas fa-check me-1"></i>Divalidasi</span>';
-                }
-
-                // Show success message
+                // Konfirmasi dengan SweetAlert
                 Swal.fire({
-                    title: 'Berhasil!',
-                    text: data.message || 'Laporan berhasil divalidasi.',
-                    icon: 'success',
+                    title: 'Validasi Laporan',
+                    text: "Apakah Anda yakin ingin memvalidasi laporan ini? Status akan berubah menjadi 'Divalidasi'.",
+                    icon: 'question',
+                    showCancelButton: true,
                     confirmButtonColor: '#06923E',
-                    timer: 3000,
-                    timerProgressBar: true
-                });
-            } else {
-                throw new Error(data.message || 'Gagal memvalidasi laporan');
-            }
-        })
-        .catch(async (error) => {
-            console.error('Error:', error);
-            
-            let errorMessage = 'Terjadi kesalahan saat memvalidasi laporan.';
-            
-            // Try to get error message from response
-            try {
-                if (error instanceof Response) {
-                    const errorData = await error.json();
-                    errorMessage = errorData.message || errorMessage;
-                    
-                    if (error.status === 419) {
-                        errorMessage = 'Sesi Anda telah habis. Silakan refresh halaman dan coba lagi.';
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '<i class="fas fa-check me-1"></i>Ya, Validasi!',
+                    cancelButtonText: '<i class="fas fa-times me-1"></i>Batal',
+                    reverseButtons: true,
+                    focusConfirm: false,
+                    focusCancel: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        approveReport(laporanId, btn);
                     }
-                }
-            } catch (e) {
-                // Use default error message
-            }
-
-            // Show error message
-            Swal.fire({
-                title: 'Oops!',
-                text: errorMessage,
-                icon: 'error',
-                confirmButtonColor: '#dc3545'
+                });
             });
-
-            // Restore button
-            btn.disabled = false;
-            btn.innerHTML = originalHtml;
         });
-    }
 
-    // Function untuk show image modal
-    window.showImageModal = function(imageSrc) {
-        const modal = new bootstrap.Modal(document.getElementById('imageModal'));
-        document.getElementById('modalImage').src = imageSrc;
-        modal.show();
-    };
-});
+        // Function untuk approve laporan
+        function approveReport(laporanId, btn) {
+            btn.disabled = true;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Memproses...';
+
+            // ✅ gunakan route() agar sesuai prefix /admin
+            const url = "{{ route('laporan.approve', ':id') }}".replace(':id', laporanId);
+
+            fetch(url, {
+                    method: 'PATCH',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) throw response;
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        const statusCell = btn.closest('td');
+                        if (statusCell) {
+                            statusCell.innerHTML = '<span class="badge bg-success fs-6"><i class="fas fa-check me-1"></i>Divalidasi</span>';
+                        }
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: data.message || 'Laporan berhasil divalidasi.',
+                            icon: 'success',
+                            confirmButtonColor: '#06923E',
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+                    } else {
+                        throw new Error(data.message || 'Gagal memvalidasi laporan');
+                    }
+                })
+                .catch(async (error) => {
+                    console.error('Error:', error);
+                    let errorMessage = 'Terjadi kesalahan saat memvalidasi laporan.';
+                    try {
+                        if (error instanceof Response) {
+                            const errorData = await error.json();
+                            errorMessage = errorData.message || errorMessage;
+                            if (error.status === 419) {
+                                errorMessage = 'Sesi Anda telah habis. Silakan refresh halaman dan coba lagi.';
+                            }
+                        }
+                    } catch {}
+                    Swal.fire({
+                        title: 'Oops!',
+                        text: errorMessage,
+                        icon: 'error',
+                        confirmButtonColor: '#dc3545'
+                    });
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                });
+        }
+
+        // Function untuk show image modal
+        window.showImageModal = function(imageSrc) {
+            const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+            document.getElementById('modalImage').src = imageSrc;
+            modal.show();
+        };
+    });
 </script>
 @endpush

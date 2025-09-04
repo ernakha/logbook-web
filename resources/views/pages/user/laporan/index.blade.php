@@ -57,13 +57,18 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <span class="badge bg-warning">{{ ucfirst($item->status) }}</span>
-                                </td>
-                                <td>
-                                    @if ($item->dokumentasi)
-                                    <img src="{{ asset('storage/'.$item->dokumentasi) }}" style="max-width:100px; max-height:100px; object-fit:cover;" alt="Dokumentasi">
+                                    @if (Str::lower($item->status) === 'proses')
+                                    <span class="badge bg-warning">
+                                        {{ ucfirst($item->status) }}
+                                    </span>
+                                    @elseif (Str::lower($item->status) === 'divalidasi')
+                                    <span class="badge bg-success">
+                                        {{ ucfirst($item->status) }}
+                                    </span>
                                     @else
-                                    -
+                                    <span class="badge bg-secondary">
+                                        {{ ucfirst($item->status ?? 'Unknown') }}
+                                    </span>
                                     @endif
                                 </td>
                                 <td>

@@ -17,7 +17,7 @@ class LaporanController extends Controller
             ->with('pegawai.user')
             ->get();
         $rph = RPH::where('bkph_id', $bkph->id)->first();
-        return view('pages.super.laporan.index', compact('bkph', 'rph', 'laporan'));
+        return view('pages.admin.laporan.index', compact('bkph', 'rph', 'laporan'));
     }
 
     public function approve(Laporan $laporan)
