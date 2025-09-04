@@ -106,7 +106,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::delete('/rph/{rph}', [AdminRPHController::class, 'delete'])->name('adminrph.delete');
 
         Route::get('/rph/{rph}/laporan', [AdminLaporanController::class, 'index'])->name('adminlaporan.index');
-        Route::patch('/laporan/{laporan}/approve', [LaporanController::class, 'approve'])->name('laporan.approve');
+        Route::patch('/laporan/{laporan}/approve', [AdminLaporanController::class, 'approve'])->name('laporan.approve');
     });
 });
 
