@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BKPHController as AdminBKPHController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\JadwalController as AdminJadwalController;
 use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
 use App\Http\Controllers\Admin\RPHController as AdminRPHController;
 use App\Http\Controllers\Super\BKPHController;
@@ -9,8 +10,10 @@ use App\Http\Controllers\Super\PegawaiController;
 use App\Http\Controllers\Super\RPHController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Super\DashboardController;
+use App\Http\Controllers\Super\JadwalController;
 use App\Http\Controllers\Super\LaporanController as SuperLaporanController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
+use App\Http\Controllers\User\JadwalController as UserJadwalController;
 use App\Http\Controllers\User\LaporanController;
 use Illuminate\Support\Facades\Route;
 
@@ -48,6 +51,14 @@ Route::middleware(['auth', 'role:super'])->group(function () {
         Route::get('/pegawai/{id}/edit', [PegawaiController::class, 'edit'])->name('pegawai.edit');
         Route::put('/pegawai/{id}', [PegawaiController::class, 'update'])->name('pegawai.update');
         Route::delete('/pegawai/{id}', [PegawaiController::class, 'delete'])->name('pegawai.delete');
+
+        //Jadwal
+        Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+        Route::get('/jadwal/create', [JadwalController::class, 'create'])->name('jadwal.create');
+        Route::post('/jadwal', [JadwalController::class, 'store'])->name('jadwal.store');
+        Route::get('/jadwal/{id}/edit', [JadwalController::class, 'edit'])->name('jadwal.edit');
+        Route::put('/jadwal/{id}', [JadwalController::class, 'update'])->name('jadwal.update');
+        Route::delete('/jadwal/{id}', [JadwalController::class, 'delete'])->name('jadwal.delete');
 
         //BKPH Rogojampi
         Route::get('/bkphrogojampi', [BKPHController::class, 'index'])->name('bkphrogojampi.index');
@@ -93,6 +104,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
         Route::get('/laporan/{id}/edit', [LaporanController::class, 'edit'])->name('laporan.edit');
         Route::put('/laporan/{id}', [LaporanController::class, 'update'])->name('laporan.update');
         Route::delete('/laporan/{id}', [LaporanController::class, 'delete'])->name('laporan.delete');
+
+        Route::get('/jadwal', [UserJadwalController::class, 'index'])->name('jadwaluser.index');
     });
 });
 
@@ -115,6 +128,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
         Route::get('/rph/{rph}/laporan', [AdminLaporanController::class, 'index'])->name('adminlaporan.index');
         Route::patch('/laporan/{laporan}/approve', [AdminLaporanController::class, 'approve'])->name('laporan.approve');
+
+        Route::get('/jadwal', [AdminJadwalController::class, 'index'])->name('jadwalbkph.index');
+        Route::get('/jadwal/create', [AdminJadwalController::class, 'create'])->name('jadwalbkph.create');
+        Route::post('/jadwal', [AdminJadwalController::class, 'store'])->name('jadwalbkph.store');
+        Route::get('/jadwal/{id}/edit', [AdminJadwalController::class, 'edit'])->name('jadwalbkph.edit');
+        Route::put('/jadwal/{id}', [AdminJadwalController::class, 'update'])->name('jadwalbkph.update');
+        Route::delete('/jadwal/{id}', [AdminJadwalController::class, 'delete'])->name('jadwalbkph.delete');
     });
 });
 

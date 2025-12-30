@@ -85,6 +85,18 @@
                             <span class="hide-menu">BKPH Kalibaru</span>
                         </a>
                     </li>
+                    <li class="nav-small-cap">
+                        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                        <span class="hide-menu">Polhuter</span>
+                    </li>
+                    <li class="sidebar-item  {{ request()->routeIs('jadwal.index') ? 'active' : '' }}">
+                        <a class="sidebar-link" href="{{ route('jadwal.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-bookmark"></i>
+                            </span>
+                            <span class="hide-menu">Jadwal</span>
+                        </a>
+                    </li>
                     @elseif ($role === 'user')
                     <li class="nav-small-cap">
                         <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
@@ -106,6 +118,14 @@
                             <span class="hide-menu">Laporan</span>
                         </a>
                     </li>
+                    <li class="sidebar-item  {{ request()->routeIs('jadwaluser.index') ? 'active' : '' }}">
+                        <a class="sidebar-link" href="{{ route('jadwaluser.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-bookmark"></i>
+                            </span>
+                            <span class="hide-menu">Jadwal</span>
+                        </a>
+                    </li>
                     @elseif ($role == 'admin')
                     <li class="nav-small-cap">
                         <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
@@ -125,6 +145,14 @@
                                 <i class="ti ti-book"></i>
                             </span>
                             <span class="hide-menu">BKPH</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item  {{ request()->routeIs('jadwalbkph.index') ? 'active' : '' }}">
+                        <a class="sidebar-link" href="{{ route('jadwalbkph.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-bookmark"></i>
+                            </span>
+                            <span class="hide-menu">Jadwal Polhuter</span>
                         </a>
                     </li>
                     @endif
