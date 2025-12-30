@@ -119,12 +119,12 @@
                             <span class="hide-menu">Dashboard</span>
                         </a>
                     </li>
-                    <li class="sidebar-item {{ request()->routeIs('adminrph.index') ? 'active' : '' }}">
-                        <a class="sidebar-link" href="{{ route('adminrph.index') }}" aria-expanded="false">
+                    <li class="sidebar-item {{ request()->routeIs('adminbkph.index') ? 'active' : '' }}">
+                        <a class="sidebar-link" href="{{ route('adminbkph.index') }}" aria-expanded="false">
                             <span>
                                 <i class="ti ti-book"></i>
                             </span>
-                            <span class="hide-menu">RPH</span>
+                            <span class="hide-menu">BKPH</span>
                         </a>
                     </li>
                     @endif
