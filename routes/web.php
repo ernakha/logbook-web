@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BKPHController as AdminBKPHController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
 use App\Http\Controllers\Admin\RPHController as AdminRPHController;
@@ -97,6 +98,13 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::prefix('/admin')->group(function () {
+        Route::get('/bkph', [AdminBKPHController::class, 'index'])->name('adminbkph.index');
+        Route::get('/bkph/create', [AdminBKPHController::class, 'create'])->name('adminbkph.create');
+        Route::post('/bkph', [AdminBKPHController::class, 'store'])->name('adminbkph.store');
+        Route::get('/bkph/{bkph}/edit', [AdminBKPHController::class, 'edit'])->name('adminbkph.edit');
+        Route::put('/bkph/{bkph}', [AdminBKPHController::class, 'update'])->name('adminbkph.update');
+        Route::delete('/bkph/{bkph}', [AdminBKPHController::class, 'delete'])->name('adminbkph.delete');
+
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
         Route::get('/rph', [AdminRPHController::class, 'index'])->name('adminrph.index');
         Route::get('/rph/create', [AdminRPHController::class, 'create'])->name('adminrph.create');
