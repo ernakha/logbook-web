@@ -26,4 +26,9 @@ class Pegawai extends Model
     {
         return $this->belongsTo(BKPH::class, 'bkph_id');
     }
+
+    public function jadwal()
+    {
+        return $this->hasMany(Jadwal::class);
+    }
 }

@@ -20,12 +20,10 @@
                 <div class="card-body p-4">
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        {{-- Judul dinamis sesuai daerah admin --}}
                         <h5 class="card-title fw-semibold mb-0">
                             BKPH {{ $daerah }}
                         </h5>
 
-                        {{-- Route admin → tidak perlu parameter daerah --}}
                         <a href="{{ route('adminbkph.create') }}" class="btn btn-tambah">
                             <i class="ti ti-plus"></i> Tambah Data
                         </a>
@@ -52,17 +50,14 @@
                                         <td>{{ optional($item->pegawai->user)->name ?? '-' }}</td>
                                         <td>{{ $item->jumlah_polhuter }}</td>
                                         <td>{{ $item->telp_kantor }}</td>
-
                                         <td>
                                             <a href="{{ route('adminrph.index', $item->id) }}" class="btn btn-sm btn-info">
                                                 Lihat
                                             </a>
-
                                             <a href="{{ route('adminbkph.edit', $item->id) }}"
                                                 class="btn btn-warning btn-sm">
                                                 Edit
                                             </a>
-
                                             <form action="{{ route('adminbkph.delete', $item->id) }}" method="POST"
                                                 class="d-inline">
                                                 @csrf
