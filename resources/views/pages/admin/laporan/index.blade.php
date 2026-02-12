@@ -11,6 +11,17 @@
         background-color: #2aa15a;
         color: #fff;
     }
+
+    .btn-danger {
+        background-color: #06923E;
+        color: #fff;
+        border: none;
+    }
+
+    .btn-danger:hover {
+        background-color: #2aa15a;
+        color: #fff;
+    }
 </style>
 <div class="row">
     <div class="col-lg-12 d-flex align-items-stretch">
@@ -18,6 +29,10 @@
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h5 class="card-title fw-semibold mb-0">Laporan</h5>
+                    <a href="{{ route('laporan.export', $rph->pegawai_id) }}"
+                        class="btn btn-danger">
+                        Export PDF
+                    </a>
                 </div>
                 <div class="table-responsive">
                     <table class="table text-nowrap mb-0 align-middle">
@@ -26,7 +41,7 @@
                                 <th>No</th>
                                 <th>Tanggal</th>
                                 <th>Waktu</th>
-                                <th>Sektor</th>
+                                <th>RPH</th>
                                 <th>Uraian Kegiatan</th>
                                 <th>Saksi</th>
                                 <th>Dokumentasi</th>
@@ -47,7 +62,8 @@
                                     <img src="{{ asset('storage/'.$item->dokumentasi) }}"
                                         alt="Dokumentasi"
                                         class="img-thumbnail"
-                                        style="max-width: 100px; max-height: 100px; object-fit: cover; cursor: pointer;">
+                                        style="max-width: 100px; max-height: 100px; object-fit: cover; cursor: pointer;"
+                                        onclick="showImageModal('{{ asset('storage/'.$item->dokumentasi) }}')">
                                     @else
                                     <span class="text-muted">-</span>
                                     @endif
@@ -60,7 +76,7 @@
                                         <i class="fas fa-clock me-1"></i>Proses
                                     </button>
                                     @else
-                                    <span class="badge bg-success">
+                                    <span class="btn btn-sm btn-success">
                                         <i class="fas fa-check me-1"></i>Divalidasi
                                     </span>
                                     @endif

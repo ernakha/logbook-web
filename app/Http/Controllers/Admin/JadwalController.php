@@ -38,11 +38,15 @@ class JadwalController extends Controller
 
         $pegawaiIds = $rph->pluck('pegawai_id')->unique();
 
-        $jadwal = Jadwal::with(['pegawai.user'])
+        $jadwal = Jadwal::with([
+            'pegawai.user',
+            'pegawai.rph'
+        ])
             ->whereIn('pegawai_id', $pegawaiIds)
             ->orderBy('tanggal')
             ->orderBy('waktu')
             ->get();
+
 
         return view('pages.admin.jadwal.index', compact('jadwal'));
     }

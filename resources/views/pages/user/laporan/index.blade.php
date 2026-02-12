@@ -11,6 +11,12 @@
         background-color: #2aa15a;
         color: #fff;
     }
+
+    .wrap-text {
+        max-width: 250px;
+        white-space: normal;
+        word-wrap: break-word;
+    }
 </style>
 <div class="row">
     <div class="col-lg-12 d-flex align-items-stretch">
@@ -30,7 +36,7 @@
                                 <th>No</th>
                                 <th>Tanggal</th>
                                 <th>Waktu</th>
-                                <th>Sektor</th>
+                                <th>RPH</th>
                                 <th>Uraian Kegiatan</th>
                                 <th>Saksi</th>
                                 <th>Dokumentasi</th>
@@ -45,13 +51,18 @@
                                 <td>{{ $item->tanggal }}</td>
                                 <td>{{ $item->waktu }}</td>
                                 <td>{{ $item->sektor }}</td>
-                                <td>{{ $item->uraian_kegiatan }}</td>
+                                <td>{{ Str::limit($item->uraian_kegiatan, 50) }}</td>
                                 <td>{{ $item->saksi }}</td>
                                 <td>
                                     @if ($item->dokumentasi)
                                     <img src="{{ asset('storage/'.$item->dokumentasi) }}"
                                         alt="Dokumentasi"
-                                        style="max-width: 100px; max-height: 100px; object-fit: cover; border-radius: 6px;">
+                                        width="80"
+                                        height="80"
+                                        style="object-fit: cover; border-radius: 6px; cursor:pointer;"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#previewModal"
+                                        onclick="previewImage('{{ asset('storage/'.$item->dokumentasi) }}')">
                                     @else
                                     -
                                     @endif
@@ -95,4 +106,21 @@
         </div>
     </div>
 </div>
+<!-- Modal Preview -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img id="previewImage" src="" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function previewImage(src) {
+        document.getElementById('previewImage').src = src;
+    }
+</script>
+
 @endsection

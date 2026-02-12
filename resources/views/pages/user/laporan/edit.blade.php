@@ -66,7 +66,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="sektor" class="form-label">Sektor</label>
+                        <label for="sektor" class="form-label">RPH</label>
                         <input type="text" name="sektor" id="sektor" value="{{ $laporan->sektor }}"
                             class="form-control @error('sektor') is-invalid @enderror" required>
                         @error('sektor') <div class="text-danger">{{ $message }}</div> @enderror

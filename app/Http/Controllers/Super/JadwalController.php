@@ -11,7 +11,8 @@ class JadwalController extends Controller
 {
     public function index()
     {
-        $jadwal = Jadwal::with('pegawai.user')->get();
+        $jadwal = Jadwal::with(['pegawai.user', 'pegawai.rph'])
+            ->get();
 
         return view('pages.super.jadwal.index', compact('jadwal'));
     }

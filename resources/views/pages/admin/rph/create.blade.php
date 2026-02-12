@@ -69,7 +69,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-simpan">Simpan</button>
-                    <a href="{{ route('adminrph.index') }}" class="btn btn-batal">Batal</a>
+                    <a href="{{ route('adminrph.index', $bkph->id) }}" class="btn btn-batal">Batal</a>
                 </form>
             </div>
         </div>

@@ -31,4 +31,9 @@ class Pegawai extends Model
     {
         return $this->hasMany(Jadwal::class);
     }
+    
+    public function rph()
+    {
+        return $this->hasOne(RPH::class);
+    }
 }

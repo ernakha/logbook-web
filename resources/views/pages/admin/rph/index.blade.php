@@ -11,6 +11,17 @@
         background-color: #2aa15a;
         color: #fff;
     }
+
+    .btn-disable {
+        background-color: #6c757d;
+        border: none;
+        color: #fff;
+    }
+
+    .btn-disable:hover {
+        background-color: #6c757d;
+        color: #fff;
+    }
 </style>
 <div class="row">
     <div class="col-lg-12 d-flex align-items-stretch">
@@ -18,10 +29,15 @@
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h5 class="card-title fw-semibold mb-0">RPH</h5>
-                    <!-- Tombol Tambah -->
+                    @if($isOwner)
                     <a href="{{ route('adminrph.create') }}" class="btn btn-tambah">
                         <i class="ti ti-plus"></i> Tambah Data
                     </a>
+                    @else
+                    <button class="btn btn-disable">
+                        <i class="ti ti-plus"></i> Tambah Data
+                    </button>
+                    @endif
                 </div>
                 <div class="table-responsive">
                     <table class="table text-nowrap mb-0 align-middle">
