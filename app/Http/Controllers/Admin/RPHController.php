@@ -11,33 +11,37 @@ use Illuminate\Support\Facades\Auth;
 
 class RPHController extends Controller
 {
-    public function index()
+    public function index($bkphId)
     {
-        // Ambil pegawai dari user login
-        $pegawai = Pegawai::where('user_id', Auth::id())->first();
+        $currentUser = auth()->user();
+        $currentPegawai = Pegawai::where('user_id', $currentUser->id)->first();
 
-        if (!$pegawai) {
-            return redirect()->back()->with('error', 'Pegawai untuk user login tidak ditemukan.');
+        $bkphLogin = null;
+        $isOwner = false;
+
+        if ($currentPegawai) {
+            $bkphLogin = BKPH::where('pegawai_id', $currentPegawai->id)->first();
         }
 
-        // Ambil BKPH yang memiliki pegawai ini
-        $bkph = BKPH::whereHas('pegawai', function ($q) use ($pegawai) {
-            $q->where('id', $pegawai->id);
-        })->first();
+        $bkph = BKPH::findOrFail($bkphId);
 
-        if (!$bkph) {
-            return redirect()->back()->with('error', 'BKPH untuk pegawai ini tidak ditemukan.');
+        // Cek apakah BKPH yang dibuka adalah milik user login
+        if ($bkphLogin && $bkphLogin->id == $bkph->id) {
+            $isOwner = true;
         }
 
-        // Ambil RPH yang memiliki bkph_id sama
         $rph = RPH::with(['pegawai.user', 'bkph'])
             ->where('bkph_id', $bkph->id)
             ->get();
 
-        // Ambil semua pegawai (jika perlu untuk dropdown atau info tambahan)
         $allPegawai = Pegawai::with('user')->get();
 
-        return view('pages.admin.rph.index', compact('rph', 'allPegawai'));
+        return view('pages.admin.rph.index', compact(
+            'rph',
+            'bkph',
+            'allPegawai',
+            'isOwner'
+        ));
     }
 
     public function create()
@@ -108,7 +112,8 @@ class RPHController extends Controller
             'no_telp'    => $request->no_telp,
         ]);
 
-        return redirect()->route('adminrph.index')->with('success', 'RPH berhasil ditambahkan.');
+        return redirect()->route('adminrph.index', $bkph->id)
+            ->with('success', 'RPH berhasil ditambahkan.');
     }
 
     // Edit RPH
@@ -194,7 +199,8 @@ class RPHController extends Controller
             'no_telp'    => $request->no_telp,
         ]);
 
-        return redirect()->route('adminrph.index')->with('success', 'Data RPH berhasil diperbarui.');
+        return redirect()->route('adminrph.index', $bkph->id)
+            ->with('success', 'Data RPH berhasil diperbarui.');
     }
 
     // Delete RPH method (sesuai route yang ada)
@@ -214,7 +220,7 @@ class RPHController extends Controller
 
         $rph->delete();
 
-        return redirect()->route('adminrph.index')->with('success', 'Data RPH berhasil dihapus.');
+        return redirect()->route('adminrph.index', $bkph->id)
+            ->with('success', 'Data RPH berhasil dihapus.');
     }
-
 }

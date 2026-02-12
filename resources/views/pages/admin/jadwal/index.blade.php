@@ -42,7 +42,11 @@
                             @forelse ($jadwal as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->pegawai->user->name ?? '-' }}</td>
+                                    <td><strong>{{ $item->pegawai->user->name ?? '-' }}</strong>
+                                        <br>
+                                        Jabatan: {{ $item->pegawai->jabatan ?? '-' }}<br>
+                                        No HP: {{ $item->pegawai->rph->no_telp ?? '-' }}
+                                    </td>
                                     <td>{{ $item->hari }}</td>
                                     <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
                                     <td>{{ $item->waktu }}</td>

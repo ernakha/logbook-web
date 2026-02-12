@@ -6,17 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Models\BKPH;
 use App\Models\Laporan;
 use App\Models\RPH;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LaporanController extends Controller
 {
     public function index(BKPH $bkph, RPH $rph)
     {
-        // $rph sudah instance model karena Route Model Binding
         $laporan = Laporan::where('pegawai_id', $rph->pegawai_id)
             ->with('pegawai.user')
+            ->orderBy('tanggal')
+            ->orderBy('waktu')
             ->get();
-        $rph = RPH::where('bkph_id', $bkph->id)->first();
+
         return view('pages.admin.laporan.index', compact('bkph', 'rph', 'laporan'));
     }
 
@@ -45,5 +48,30 @@ class LaporanController extends Controller
                 'message' => 'Terjadi kesalahan saat memvalidasi laporan.'
             ], 500);
         }
+    }
+
+    public function exportPdf($pegawaiId)
+    {
+        $laporan = Laporan::with(['pegawai.user'])
+            ->where('pegawai_id', $pegawaiId)
+            ->orderBy('tanggal')
+            ->orderBy('waktu')
+            ->get();
+
+        if ($laporan->isEmpty()) {
+            return redirect()->back()->with('error', 'Tidak ada laporan untuk pegawai ini.');
+        }
+
+        $namaPembuat = $laporan->first()->pegawai->user->name ?? '-';
+
+        $pdf = Pdf::loadView(
+            'pages.admin.laporan.pdf',
+            [
+                'laporan' => $laporan,
+                'namaPembuat' => $namaPembuat
+            ]
+        )->setPaper('a4', 'landscape');
+
+        return $pdf->stream('laporan.pdf');
     }
 }

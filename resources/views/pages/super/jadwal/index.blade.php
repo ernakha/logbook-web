@@ -39,39 +39,41 @@
                         </thead>
                         <tbody>
                             @forelse ($jadwal as $item)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>
-                                        {{ $item->pegawai->user->name ?? '-' }}
-                                    </td>
-                                    <td>{{ $item->hari }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
-                                    <td>{{ $item->waktu }}</td>
-                                    <td>{{ $item->kegiatan }}</td>
-                                    <td>
-                                        <a href="{{ route('jadwal.edit', $item->id) }}"
-                                           class="btn btn-warning btn-sm">
-                                            Edit
-                                        </a>
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>
+                                    <strong>{{ $item->pegawai->user->name ?? '-' }}</strong><br>
+                                    Jabatan: {{ $item->pegawai->jabatan ?? '-' }}<br>
+                                    No HP: {{ $item->pegawai->rph->no_telp ?? '-' }}
+                                </td>
+                                <td>{{ $item->hari }}</td>
+                                <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
+                                <td>{{ $item->waktu }}</td>
+                                <td>{{ $item->kegiatan }}</td>
+                                <td>
+                                    <a href="{{ route('jadwal.edit', $item->id) }}"
+                                        class="btn btn-warning btn-sm">
+                                        Edit
+                                    </a>
 
-                                        <form action="{{ route('jadwal.delete', $item->id) }}"
-                                              method="POST"
-                                              style="display:inline-block;"
-                                              onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                Hapus
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
+                                    <form action="{{ route('jadwal.delete', $item->id) }}"
+                                        method="POST"
+                                        style="display:inline-block;"
+                                        onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
                             @empty
-                                <tr>
-                                    <td colspan="7" class="text-center">
-                                        Data jadwal belum tersedia
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td colspan="7" class="text-center">
+                                    Data jadwal belum tersedia
+                                </td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>

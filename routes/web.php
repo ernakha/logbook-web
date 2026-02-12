@@ -119,7 +119,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::delete('/bkph/{bkph}', [AdminBKPHController::class, 'delete'])->name('adminbkph.delete');
 
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-        Route::get('/rph', [AdminRPHController::class, 'index'])->name('adminrph.index');
+        Route::get('/admin/rph/{bkph}', [AdminRPHController::class, 'index'])->name('adminrph.index');
         Route::get('/rph/create', [AdminRPHController::class, 'create'])->name('adminrph.create');
         Route::post('/rph', [AdminRPHController::class, 'store'])->name('adminrph.store');
         Route::get('/rph/{rph}/edit', [AdminRPHController::class, 'edit'])->name('adminrph.edit');
@@ -128,6 +128,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
         Route::get('/rph/{rph}/laporan', [AdminLaporanController::class, 'index'])->name('adminlaporan.index');
         Route::patch('/laporan/{laporan}/approve', [AdminLaporanController::class, 'approve'])->name('laporan.approve');
+        Route::get('/laporan/export/{pegawai}', [AdminLaporanController::class, 'exportPdf'])->name('laporan.export');
 
         Route::get('/jadwal', [AdminJadwalController::class, 'index'])->name('jadwalbkph.index');
         Route::get('/jadwal/create', [AdminJadwalController::class, 'create'])->name('jadwalbkph.create');

@@ -26,7 +26,7 @@
                                 <th>No</th>
                                 <th>Tanggal</th>
                                 <th>Waktu</th>
-                                <th>Sektor</th>
+                                <th>RPH</th>
                                 <th>Uraian Kegiatan</th>
                                 <th>Saksi</th>
                                 <th>Dokumentasi</th>
