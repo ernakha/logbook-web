@@ -37,6 +37,7 @@
                                 <th>Tanggal</th>
                                 <th>Waktu</th>
                                 <th>RPH</th>
+                                <th>Petak</th>
                                 <th>Uraian Kegiatan</th>
                                 <th>Saksi</th>
                                 <th>Dokumentasi</th>
@@ -51,8 +52,29 @@
                                 <td>{{ $item->tanggal }}</td>
                                 <td>{{ $item->waktu }}</td>
                                 <td>{{ $item->sektor }}</td>
-                                <td>{{ Str::limit($item->uraian_kegiatan, 50) }}</td>
-                                <td>{{ $item->saksi }}</td>
+                                <td>{{ $item->petak_hutan ?? '-' }}</td>
+                                <td class="wrap-text">
+                                    {{ Str::limit($item->uraian_kegiatan, 50) }}
+                                </td>
+
+                                {{-- SAKSI + TANDA TANGAN --}}
+                                <td>
+                                    <div>{{ $item->saksi }}</div>
+
+                                    @if ($item->tanda_tangan)
+                                    <div class="mt-2">
+                                        <img src="{{ asset('storage/'.$item->tanda_tangan) }}"
+                                            alt="Tanda Tangan"
+                                            width="100"
+                                            style="border:1px solid #ccc; border-radius:4px; cursor:pointer;"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#previewModal"
+                                            onclick="previewImage('{{ asset('storage/'.$item->tanda_tangan) }}')">
+                                    </div>
+                                    @endif
+                                </td>
+
+                                {{-- DOKUMENTASI --}}
                                 <td>
                                     @if ($item->dokumentasi)
                                     <img src="{{ asset('storage/'.$item->dokumentasi) }}"
@@ -67,6 +89,8 @@
                                     -
                                     @endif
                                 </td>
+
+                                {{-- STATUS --}}
                                 <td>
                                     @if (Str::lower($item->status) === 'proses')
                                     <span class="badge bg-warning">
@@ -82,23 +106,34 @@
                                     </span>
                                     @endif
                                 </td>
-                                <td>
-                                    <a href="{{ route('laporan.edit', $item->id) }}" class="btn btn-sm btn-warning">Edit</a>
 
-                                    <form action="{{ route('laporan.delete', $item->id) }}" method="POST" class="d-inline">
+                                {{-- AKSI --}}
+                                <td>
+                                    <a href="{{ route('laporan.edit', $item->id) }}" class="btn btn-sm btn-warning">
+                                        Edit
+                                    </a>
+
+                                    <form action="{{ route('laporan.delete', $item->id) }}"
+                                        method="POST"
+                                        class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus data?')">Hapus</button>
+                                        <button class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Yakin hapus data?')">
+                                            Hapus
+                                        </button>
                                     </form>
                                 </td>
-
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="10" class="text-center">Belum ada data laporan</td>
+                                <td colspan="10" class="text-center">
+                                    Belum ada data laporan
+                                </td>
                             </tr>
                             @endforelse
                         </tbody>
+
 
                     </table>
                 </div>

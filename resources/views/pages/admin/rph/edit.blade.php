@@ -50,9 +50,9 @@
                         <select name="pegawai_id" id="pegawai_id" class="form-select" required>
                             <option value="">-- Pilih Pegawai --</option>
                             @foreach ($pegawai as $p)
-                                <option value="{{ $p->id }}" {{ $rph->pegawai_id == $p->id ? 'selected' : '' }}>
-                                    {{ $p->user->name }}
-                                </option>
+                            <option value="{{ $p->id }}" {{ $rph->pegawai_id == $p->id ? 'selected' : '' }}>
+                                {{ $p->user->name }}
+                            </option>
                             @endforeach
                         </select>
                         @error('pegawai_id') <div class="text-danger">{{ $message }}</div> @enderror
@@ -75,7 +75,10 @@
                     </div>
 
                     <button type="submit" class="btn btn-simpan">Simpan</button>
-                    <a href="{{ route('adminrph.index') }}" class="btn btn-batal">Batal</a>
+                    <a href="{{ route('adminrph.index', $bkph->id) }}"
+                        class="btn btn-batal">
+                        Batal
+                    </a>
                 </form>
             </div>
         </div>

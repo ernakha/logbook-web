@@ -29,15 +29,10 @@
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h5 class="card-title fw-semibold mb-0">RPH</h5>
-                    @if($isOwner)
-                    <a href="{{ route('adminrph.create') }}" class="btn btn-tambah">
+                    <a href="{{ route('adminrph.create', ['bkph_id' => $bkph->id]) }}"
+                        class="btn btn-tambah">
                         <i class="ti ti-plus"></i> Tambah Data
                     </a>
-                    @else
-                    <button class="btn btn-disable">
-                        <i class="ti ti-plus"></i> Tambah Data
-                    </button>
-                    @endif
                 </div>
                 <div class="table-responsive">
                     <table class="table text-nowrap mb-0 align-middle">
@@ -66,12 +61,12 @@
                                     </a>
                                 <td>
                                     <!-- Tombol Edit -->
-                                    <a href="{{ route('adminrph.edit', $item->id) }}"
+                                    <a href="{{ route('adminrph.edit', ['rph' => $item->id, 'bkph_id' => $bkph->id]) }}"
                                         class="btn btn-sm btn-warning">
                                         Edit
                                     </a>
 
-                                    <form action="{{ route('adminrph.delete', $item->id) }}"
+                                    <form action="{{ route('adminrph.delete', ['rph' => $item->id, 'bkph_id' => $bkph->id]) }}"
                                         method="POST"
                                         class="d-inline">
                                         @csrf
@@ -81,6 +76,7 @@
                                             Hapus
                                         </button>
                                     </form>
+
 
                                 </td>
                             </tr>

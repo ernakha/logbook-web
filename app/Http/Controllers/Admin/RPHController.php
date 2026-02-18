@@ -44,34 +44,23 @@ class RPHController extends Controller
         ));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        // Ambil user yang sedang login
-        $currentUser = auth()->user();
+        $bkphId = $request->bkph_id;
 
-        // Cari pegawai berdasarkan user yang sedang login
-        $currentPegawai = Pegawai::where('user_id', $currentUser->id)->first();
-
-        if (!$currentPegawai) {
-            return redirect()->back()->with('error', 'Data pegawai tidak ditemukan untuk user yang sedang login.');
+        if (!$bkphId) {
+            return back()->with('error', 'BKPH tidak ditemukan.');
         }
 
-        // Cari BKPH berdasarkan pegawai yang sedang login
-        $bkph = BKPH::where('pegawai_id', $currentPegawai->id)->first();
+        $bkph = BKPH::findOrFail($bkphId);
 
-        if (!$bkph) {
-            return redirect()->back()->with('error', 'BKPH tidak ditemukan untuk pegawai yang sedang login.');
-        }
-
-        // Ambil semua pegawai yang memiliki user dengan role 'user' (untuk dropdown jika diperlukan)
         $pegawai = Pegawai::whereHas('user', function ($q) {
             $q->where('role', 'user');
         })->with('user')->get();
 
-        return view('pages.admin.rph.create', compact('pegawai', 'bkph', 'currentPegawai'));
+        return view('pages.admin.rph.create', compact('pegawai', 'bkph'));
     }
 
-    // Store RPH
     public function store(Request $request)
     {
         $request->validate([
@@ -81,69 +70,30 @@ class RPHController extends Controller
             'no_telp'    => 'required|string|max:20',
         ]);
 
-        // Validasi bahwa bkph_id yang dikirim sesuai dengan user yang login
-        $currentUser = auth()->user();
-        $currentPegawai = Pegawai::where('user_id', $currentUser->id)->first();
-
-        if (!$currentPegawai) {
-            return redirect()->back()->with('error', 'Data pegawai tidak ditemukan untuk user yang sedang login.');
-        }
-
-        $bkph = BKPH::where('pegawai_id', $currentPegawai->id)->first();
-
-        if (!$bkph || $bkph->id != $request->bkph_id) {
-            return redirect()->back()->with('error', 'BKPH tidak sesuai dengan pegawai yang sedang login.');
-        }
-
-        // Ambil pegawai yang dipilih dari form
         $pegawai = Pegawai::with('user')
             ->where('id', $request->pegawai_id)
             ->whereHas('user', fn($q) => $q->where('role', 'user'))
             ->first();
 
         if (!$pegawai) {
-            return redirect()->back()->with('error', 'Pegawai tidak ditemukan atau bukan role user.');
+            return back()->with('error', 'Pegawai tidak ditemukan atau bukan role user.');
         }
 
         RPH::create([
-            'bkph_id'    => $request->bkph_id, // Menggunakan bkph_id dari form (yang sudah otomatis)
+            'bkph_id'    => $request->bkph_id,
             'pegawai_id' => $pegawai->id,
             'sektor'     => $request->sektor,
             'no_telp'    => $request->no_telp,
         ]);
 
-        return redirect()->route('adminrph.index', $bkph->id)
+        return redirect()->route('adminrph.index', $request->bkph_id)
             ->with('success', 'RPH berhasil ditambahkan.');
     }
 
-    // Edit RPH
     public function edit(RPH $rph)
     {
-        // Ambil user yang sedang login
-        $currentUser = auth()->user();
+        $bkph = $rph->bkph;
 
-        // Cari pegawai berdasarkan user yang sedang login
-        $currentPegawai = Pegawai::where('user_id', $currentUser->id)->first();
-
-        if (!$currentPegawai) {
-            return redirect()->back()->with('error', 'Data pegawai tidak ditemukan untuk user yang sedang login.');
-        }
-
-        // Debug: cek struktur relasi BKPH
-        // Jika BKPH memiliki relasi pegawai (belongsTo), gunakan:
-        $bkph = BKPH::where('pegawai_id', $currentPegawai->id)->first();
-
-        // Atau jika BKPH memiliki relasi hasMany dengan pegawai, gunakan:
-        // $bkph = BKPH::whereHas('pegawai', function($q) use ($currentPegawai) {
-        //     $q->where('id', $currentPegawai->id);
-        // })->first();
-
-        // Debug: cek apakah $bkph ada dan tidak null
-        if (!$bkph) {
-            return redirect()->back()->with('error', 'BKPH tidak ditemukan untuk pegawai yang sedang login.');
-        }
-
-        // Ambil semua pegawai dengan role 'user' (untuk dropdown)
         $pegawai = Pegawai::whereHas('user', fn($q) => $q->where('role', 'user'))
             ->with('user')
             ->get();
@@ -151,76 +101,40 @@ class RPHController extends Controller
         return view('pages.admin.rph.edit', compact('rph', 'pegawai', 'bkph'));
     }
 
-    // Update RPH
     public function update(Request $request, RPH $rph)
     {
         $request->validate([
-            'bkph_id'    => 'required|exists:bkph,id',
             'pegawai_id' => 'required|exists:pegawai,id',
             'sektor'     => 'required|string|max:255',
             'no_telp'    => 'required|string|max:20',
         ]);
 
-        // Validasi BKPH sesuai pegawai yang login
-        $currentUser = auth()->user();
-        $currentPegawai = Pegawai::where('user_id', $currentUser->id)->first();
-
-        if (!$currentPegawai) {
-            return redirect()->back()->with('error', 'Data pegawai tidak ditemukan untuk user yang sedang login.');
-        }
-
-        // Sama seperti di method edit, pastikan query menghasilkan single model
-        $bkph = BKPH::where('pegawai_id', $currentPegawai->id)->first();
-
-        // Validasi BKPH ditemukan
-        if (!$bkph) {
-            return redirect()->back()->with('error', 'BKPH tidak ditemukan untuk pegawai yang sedang login.');
-        }
-
-        // Validasi BKPH ID sesuai
-        if ($bkph->id != $request->bkph_id) {
-            return redirect()->back()->with('error', 'BKPH tidak sesuai dengan pegawai yang sedang login.');
-        }
-
-        // Ambil pegawai yang dipilih dari form dan pastikan role user
         $pegawai = Pegawai::with('user')
             ->where('id', $request->pegawai_id)
             ->whereHas('user', fn($q) => $q->where('role', 'user'))
             ->first();
 
         if (!$pegawai) {
-            return redirect()->back()->with('error', 'Pegawai tidak ditemukan atau bukan role user.');
+            return back()->with('error', 'Pegawai tidak ditemukan atau bukan role user.');
         }
 
         $rph->update([
-            'bkph_id'    => $request->bkph_id,
             'pegawai_id' => $pegawai->id,
             'sektor'     => $request->sektor,
             'no_telp'    => $request->no_telp,
         ]);
 
-        return redirect()->route('adminrph.index', $bkph->id)
+        return redirect()->route('adminrph.index', $rph->bkph_id)
             ->with('success', 'Data RPH berhasil diperbarui.');
     }
 
-    // Delete RPH method (sesuai route yang ada)
     public function delete(RPH $rph)
     {
-        // Opsional: validasi bahwa user hanya bisa hapus RPH yang sesuai dengan BKPH-nya
-        $currentUser = auth()->user();
-        $currentPegawai = Pegawai::where('user_id', $currentUser->id)->first();
-
-        if ($currentPegawai) {
-            $bkph = BKPH::where('pegawai_id', $currentPegawai->id)->first();
-
-            if ($bkph && $rph->bkph_id !== $bkph->id) {
-                return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk menghapus data RPH ini.');
-            }
-        }
+        $bkphId = $rph->bkph_id;
 
         $rph->delete();
 
-        return redirect()->route('adminrph.index', $bkph->id)
+        return redirect()->route('adminrph.index', $bkphId)
             ->with('success', 'Data RPH berhasil dihapus.');
     }
 }

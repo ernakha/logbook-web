@@ -42,6 +42,7 @@
                                 <th>Tanggal</th>
                                 <th>Waktu</th>
                                 <th>RPH</th>
+                                <th>Petak</th>
                                 <th>Uraian Kegiatan</th>
                                 <th>Saksi</th>
                                 <th>Dokumentasi</th>
@@ -55,8 +56,29 @@
                                 <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d/m/Y') }}</td>
                                 <td>{{ $item->waktu }}</td>
                                 <td>{{ $item->sektor }}</td>
+
+                                {{-- PETAK HUTAN --}}
+                                <td>{{ $item->petak_hutan ?? '-' }}</td>
+
+                                {{-- URAIAN --}}
                                 <td>{{ Str::limit($item->uraian_kegiatan, 50) }}</td>
-                                <td>{{ $item->saksi }}</td>
+
+                                {{-- SAKSI + TANDA TANGAN --}}
+                                <td>
+                                    <div>{{ $item->saksi }}</div>
+
+                                    @if ($item->tanda_tangan)
+                                    <div class="mt-2">
+                                        <img src="{{ asset('storage/'.$item->tanda_tangan) }}"
+                                            alt="Tanda Tangan"
+                                            class="img-thumbnail"
+                                            style="max-width:120px; cursor:pointer;"
+                                            onclick="showImageModal('{{ asset('storage/'.$item->tanda_tangan) }}')">
+                                    </div>
+                                    @endif
+                                </td>
+
+                                {{-- DOKUMENTASI --}}
                                 <td>
                                     @if ($item->dokumentasi)
                                     <img src="{{ asset('storage/'.$item->dokumentasi) }}"
@@ -68,6 +90,8 @@
                                     <span class="text-muted">-</span>
                                     @endif
                                 </td>
+
+                                {{-- STATUS --}}
                                 <td>
                                     @if ($item->status === 'proses')
                                     <button class="btn btn-sm btn-warning btn-approve"
@@ -84,7 +108,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="8" class="text-center py-4">
+                                <td colspan="9" class="text-center py-4">
                                     <div class="text-muted">
                                         <i class="fas fa-inbox fa-2x mb-2"></i>
                                         <br>Belum ada data laporan
@@ -92,6 +116,7 @@
                                 </td>
                             </tr>
                             @endforelse
+                        </tbody>
                         </tbody>
                     </table>
                 </div>
