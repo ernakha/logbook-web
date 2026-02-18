@@ -20,6 +20,8 @@ class Laporan extends Model
         'dokumentasi',
         'saksi',
         'status',
+        'petak_hutan',
+        'tanda_tangan',
     ];
 
     // relasi

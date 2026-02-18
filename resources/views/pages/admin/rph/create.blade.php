@@ -42,7 +42,7 @@
                     @csrf
 
                     {{-- Hidden BKPH ID --}}
-                    <input type="hidden" name="bkph_id" value="{{ $bkph ? $bkph->id : '' }}">
+                    <input type="hidden" name="bkph_id" value="{{ $bkph->id }}">
                     <div class="mb-3">
                         <label for="pegawai_id" class="form-label">Pilih Pegawai</label>
                         <select name="pegawai_id" id="pegawai_id" class="form-select" required>

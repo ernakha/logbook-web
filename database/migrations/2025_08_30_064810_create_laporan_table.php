@@ -21,7 +21,9 @@ return new class extends Migration
             $table->string('uraian_kegiatan');
             $table->string('dokumentasi');
             $table->string('saksi');
+            $table->string('petak_hutan');
             $table->enum('status', ['proses', 'divalidasi'])->default('proses');
+            $table->string('tanda_tangan')->nullable();
             $table->timestamps();
         });
     }

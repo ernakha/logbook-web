@@ -27,6 +27,7 @@
                                 <th>Tanggal</th>
                                 <th>Waktu</th>
                                 <th>RPH</th>
+                                <th>Petak</th>
                                 <th>Uraian Kegiatan</th>
                                 <th>Saksi</th>
                                 <th>Dokumentasi</th>
@@ -40,8 +41,27 @@
                                 <td>{{ $item->tanggal }}</td>
                                 <td>{{ $item->waktu }}</td>
                                 <td>{{ $item->sektor }}</td>
+
+                                {{-- PETAK HUTAN --}}
+                                <td>{{ $item->petak_hutan ?? '-' }}</td>
+
+                                {{-- URAIAN --}}
                                 <td>{{ $item->uraian_kegiatan }}</td>
-                                <td>{{ $item->saksi }}</td>
+
+                                {{-- SAKSI + TANDA TANGAN --}}
+                                <td>
+                                    <div>{{ $item->saksi }}</div>
+
+                                    @if ($item->tanda_tangan)
+                                    <div class="mt-2">
+                                        <img src="{{ asset('storage/'.$item->tanda_tangan) }}"
+                                            alt="Tanda Tangan"
+                                            style="max-width:120px; border:1px solid #ccc; border-radius:4px;">
+                                    </div>
+                                    @endif
+                                </td>
+
+                                {{-- DOKUMENTASI --}}
                                 <td>
                                     @if ($item->dokumentasi)
                                     <img src="{{ asset('storage/'.$item->dokumentasi) }}"
@@ -51,17 +71,32 @@
                                     -
                                     @endif
                                 </td>
+
+                                {{-- STATUS --}}
                                 <td>
-                                    <span class="badge bg-warning">{{ ucfirst($item->status) }}</span>
+                                    @if (Str::lower($item->status) === 'proses')
+                                    <span class="badge bg-warning">
+                                        {{ ucfirst($item->status) }}
+                                    </span>
+                                    @elseif (Str::lower($item->status) === 'divalidasi')
+                                    <span class="badge bg-success">
+                                        {{ ucfirst($item->status) }}
+                                    </span>
+                                    @else
+                                    <span class="badge bg-secondary">
+                                        {{ ucfirst($item->status ?? 'Unknown') }}
+                                    </span>
+                                    @endif
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="10" class="text-center">Belum ada data laporan</td>
+                                <td colspan="9" class="text-center">
+                                    Belum ada data laporan
+                                </td>
                             </tr>
                             @endforelse
                         </tbody>
-
                     </table>
                 </div>
             </div>
